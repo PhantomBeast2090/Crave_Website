@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+@theme {
+  --color-base: #fff9f0;
+  --color-surface: #ffffff;
+  --color-surface-2: #f6efe3;
+  --color-ink: #171111;
+  --color-ink-2: #4a3f3f;
+  --color-ink-3: #6e625e;
+  --color-line: #e7dac6;
+  --color-charcoal: #1d1a18;
+  --color-charcoal-2: #2a2523;
+  --color-accent: #ff4d2e;
+  --color-accent-ink: #ffffff;
+  --color-accent-deep: #c4320e;
+  --color-accent-soft: #ffe3d9;
+  --color-lime: #a8e10c;
+  --color-cobalt: #2456e6;
+  --color-citrus: #ff9e0b;
+  --color-pink: #ff4d8d;
+  --color-grape: #7c5cff;
+  --color-success: #1f9d55;
+  --color-warning: #b7791f;
+  --color-error: #d92d20;
+  --font-display: "Bricolage Grotesque", "Space Grotesk", system-ui, sans-serif;
+  --font-sans: "Manrope", "Plus Jakarta Sans", system-ui, sans-serif;
+}
+
+:root {
+  --base: #fff9f0; --surface: #ffffff; --surface-2: #f6efe3;
+  --ink: #171111; --ink-2: #4a3f3f; --ink-3: #6e625e; --line: #e7dac6;
+  --accent: #ff4d2e; --accent-ink: #ffffff; --accent-deep: #c4320e; --accent-soft: #ffe3d9;
+  --step--1: 0.833rem; --step-0: 1rem; --step-1: 1.25rem; --step-2: 1.563rem;
+  --step-3: 1.953rem; --step-4: 2.441rem; --step-5: 3.052rem; --step-6: 3.815rem;
+  --space-3xs: 0.25rem; --space-2xs: 0.5rem; --space-xs: 0.75rem; --space-s: 1rem;
+  --space-m: 1.5rem; --space-l: 2rem; --space-xl: 3rem; --space-2xl: 4.5rem; --space-3xl: 7rem;
+  --radius-s: 8px; --radius-m: 12px; --radius-l: 16px; --radius-pill: 999px;
+  --border: 1px solid var(--line);
+  --shadow-near: 0 1px 2px rgb(23 17 17 / 0.08);
+  --shadow-far: 0 12px 32px -12px rgb(23 17 17 / 0.22);
+  --dur-fast: 120ms; --dur: 220ms; --dur-slow: 420ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1); --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body { background: var(--base); color: var(--ink); font-family: var(--font-sans); }
+h1, h2, h3, .font-display { font-family: var(--font-display); text-wrap: balance; }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+:focus:not(:focus-visible) { outline: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important; animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important; scroll-behavior: auto !important;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+.tabular { font-variant-numeric: tabular-nums; }

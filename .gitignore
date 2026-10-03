@@ -17,3 +17,9 @@ web/.env*.local
 # misc
 .DS_Store
 *.log
+
+# agent runtime (local skills/tooling, not product)
+.opencode/
+web/test-results/
+web/playwright-report/
+web/shots/
