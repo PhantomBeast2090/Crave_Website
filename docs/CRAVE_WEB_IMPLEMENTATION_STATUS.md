@@ -30,11 +30,12 @@ Next.js 16 + React 19 + Tailwind v4 scaffold, token CSS, consumer/vendor/managem
 - Analytics bus wired: `food_viewed`, `add_to_cart`, `favourite_toggled`, `search_submitted`, `sort_applied`, `checkout_started`, `order_completed` (flush endpoint lands with 020 events tables).
 - Lazy R3F 3D sticker cluster on desktop hero (DPR≤2, pauses offscreen, static fallback, reduced-motion + no-WebGL safe, aria-hidden).
 - Axe WCAG 2.2 AA suite green (7/7): CTA fills moved to measured 5.51:1 deep coral; bright coral reserved for large display + graphics.
+- Server-side auth proxy (Next 16 `proxy.ts`) with post-login `?next=` return; vendor queue urgency (live ages, SLA flags, opt-in sound); management order-state funnel from latest 1000 orders.
 
 ## BACKEND REQUIRED (additive migrations, Android untouched)
-- `018_web_parity_guards` (in `web/supabase/migrations/`): `get_admin_stats users→profiles` fix, `pickup_tokens` owner SELECT, `mark_payment_verified` hardening + service_role lockdown (expand→migrate→contract). **Needs DBA apply + soak.**
-- `019_reviews`: images/votes/reports/replies + server aggregates + moderation states.
-- `020_growth`: outlet favourites, collections, `analytics_events`/`search_events`, group-order tables, promotion creation, inventory adjustments, `slug` columns for outlets/categories/foods.
+- `018_web_parity_guards`: `get_admin_stats users→profiles` fix, `pickup_tokens` owner SELECT, `mark_payment_verified` hardening + service_role lockdown (expand→migrate→contract). **Needs DBA apply + soak.**
+- `019_reviews_upgrade` (**authored in `web/supabase/migrations/`, not applied**): images table hookup, helpful votes, reports, vendor replies, server aggregates trigger, `submit_review` verified-order RPC. Needs DBA review + staging verify.
+- `020_growth` (**authored, not applied**): outlet/food/category slugs + backfill, collections, outlet favourites, `analytics_events`/`search_events` pipelines, group-order tables (policies intentionally default-deny until session RPCs land).
 - Razorpay live Key ID + Edge secrets for online payments.
 
 ## KNOWN DATA-LIMITATIONS (live backend, surfaced honestly — never papered over)

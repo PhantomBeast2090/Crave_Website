@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { OpsShell, Kpi, ChartCard } from "@/components/ops-shell";
-import { ORDER_COPY } from "@/lib/domain/types";
+import { AgeChip, useNow } from "@/components/queue-age";
 import { useVendor } from "@/lib/data/vendor";
 import { useSession, RequireSignIn } from "@/lib/data/authed";
 
@@ -12,6 +12,7 @@ function todayIST(): string {
 export default function VendorHome() {
   const { session, loading: authLoading } = useSession();
   const { outlets, orders, err, acting, act } = useVendor();
+  const now = useNow();
   if (!authLoading && !session) return <OpsShell title="Vendor command" sub="Sign in as a vendor."><RequireSignIn action="run your outlet" /></OpsShell>;
 
   const today = todayIST();
@@ -51,7 +52,8 @@ export default function VendorHome() {
                 {active.slice(0, 5).map((o) => (
                   <div key={o.id} className="flex items-center gap-2 text-sm border border-line rounded-m p-2.5">
                     <span className="font-bold tabular">{o.order_number}</span>
-                    <span className="text-ink-2 truncate">{o.order_items.map((it) => `${it.quantity}× ${it.food_name}`).join(", ")} · {ORDER_COPY[o.status]}</span>
+                    <span className="text-ink-2 truncate">{o.order_items.map((it) => `${it.quantity}× ${it.food_name}`).join(", ")}</span>
+                    <AgeChip status={o.status} createdAt={o.created_at} now={now} />
                     <span className="ml-auto flex gap-1">
                       {o.status === "PLACED" && <><button disabled={!!acting} onClick={() => act("vendor_accept_order", o.id)} className="px-2.5 py-2 rounded-m bg-ink text-white text-xs font-bold min-h-11">Accept</button><button disabled={!!acting} onClick={() => act("vendor_reject_order", o.id, { p_reason: "Rejected by vendor" })} className="px-2.5 py-2 rounded-m border border-line text-xs font-bold min-h-11">Reject</button></>}
                       {o.status === "ACCEPTED" && <button disabled={!!acting} onClick={() => act("vendor_start_preparing", o.id)} className="px-2.5 py-2 rounded-m bg-ink text-white text-xs font-bold min-h-11">Start preparing</button>}
