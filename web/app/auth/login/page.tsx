@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,26 +11,28 @@ const schema = z.object({
   password: z.string().min(6, "Password needs 6+ characters."),
 });
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const params = useSearchParams();
+  const next = params.get("next")?.startsWith("/") ? params.get("next")! : "/";
   const [err, setErr] = useState<string | null>(null);
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema) });
   return (
-    <ConsumerShell>
       <div className="mx-auto max-w-md px-4 py-12">
         <h1 className="font-display text-3xl font-bold">Welcome back.</h1>
-        <p className="text-ink-2 text-sm">Your usual is waiting.</p>
+        <p className="text-ink-2 text-sm">{next === "/" ? "Your usual is waiting." : "Sign in to pick up where you left off."}</p>
         <form className="mt-6 space-y-3" noValidate
           onSubmit={handleSubmit(async (v) => {
             setErr(null);
             try {
               const { createClient } = await import("@/lib/supabase/client");
               const { isDemoMode } = await import("@/lib/supabase/env");
-              if (isDemoMode) { router.push("/"); return; }
+              if (isDemoMode) { router.push(next); return; }
               const sb = createClient();
               const { error } = await sb.auth.signInWithPassword(v);
               if (error) throw error;
-              router.push("/");
+              router.push(next);
+              router.refresh();
             } catch (e) { setErr(e instanceof Error ? e.message : "Couldn't sign you in. Check your connection and retry."); }
           })}>
           <div>
@@ -52,6 +54,15 @@ export default function LoginPage() {
           <p className="text-sm text-ink-2">New here? <a href="/auth/register" className="underline font-bold text-ink">Create an account</a></p>
         </form>
       </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <ConsumerShell>
+      <Suspense fallback={<div className="mx-auto max-w-md px-4 py-12" role="status">Loading sign-in…</div>}>
+        <LoginForm />
+      </Suspense>
     </ConsumerShell>
   );
 }
