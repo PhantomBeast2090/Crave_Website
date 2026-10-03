@@ -7,6 +7,7 @@ import type { LiveFood } from "@/lib/data/live";
 import { inr } from "@/lib/domain/types";
 import { hasRating } from "@/lib/slug";
 import { useApp } from "./providers";
+import { trackEvent } from "@/lib/analytics/events";
 import { cn } from "@/lib/utils";
 
 export function FoodImage({ food, className }: { food: Pick<LiveFood, "name" | "imageUrl" | "categoryName">; className?: string }) {
@@ -59,7 +60,7 @@ export function FoodCard({ food }: { food: LiveFood }) {
     <motion.article layout initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-40px" }}
       className="bg-surface border border-line rounded-l overflow-hidden shadow-near flex flex-col">
       <div className="relative">
-        <Link href={`/food/${food.id}`} aria-label={food.name}>
+        <Link href={`/food/${food.id}`} aria-label={food.name} onClick={() => trackEvent({ name: "food_viewed", entityType: "food", entityId: food.id })}>
           <FoodImage food={food} className="w-full aspect-[4/3]" />
         </Link>
         {!food.isAvailable && (
@@ -76,7 +77,7 @@ export function FoodCard({ food }: { food: LiveFood }) {
         </div>
         <div className="mt-auto flex items-center justify-between pt-1">
           <span className="font-bold tabular">{inr(food.price)}</span>
-          <button disabled={!food.isAvailable} onClick={() => addToCart({ foodId: food.id, qty: 1, options: [] })}
+          <button disabled={!food.isAvailable} onClick={() => { addToCart({ foodId: food.id, qty: 1, options: [] }); trackEvent({ name: "add_to_cart", entityType: "food", entityId: food.id, metadata: { qty: 1 } }); }}
             className="inline-flex items-center gap-1 px-3 py-2 rounded-m bg-ink text-white text-sm font-bold hover:bg-charcoal-2 disabled:opacity-50 min-h-11">
             <Plus size={14} /> Add
           </button>

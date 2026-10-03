@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Search, Zap, Sparkles } from "lucide-react";
 import { ConsumerShell } from "@/components/consumer-shell";
+import { Hero3DLazy } from "@/components/hero-3d-lazy";
 import { FoodCard } from "@/components/cards";
 import { cheapFoods, listCategories, listOutlets } from "@/lib/data/live";
 import { slugify } from "@/lib/slug";
@@ -41,7 +42,7 @@ export default async function Home() {
               <label htmlFor="q" className="sr-only">Search cravings</label>
               <input id="q" name="q" placeholder="Biryani, cold coffee, momos…" autoComplete="off"
                 className="flex-1 h-12 px-4 rounded-m border border-line bg-surface text-ink placeholder:text-ink-3 min-w-0" />
-              <button className="h-12 px-5 rounded-m bg-accent text-accent-ink font-bold inline-flex items-center gap-2 hover:bg-accent-deep min-h-11">
+              <button className="h-12 px-5 rounded-m bg-accent-deep text-white font-bold inline-flex items-center gap-2 hover:bg-ink min-h-11">
                 <Search size={17} /> <span className="hidden sm:inline">Search</span>
               </button>
             </form>
@@ -62,6 +63,9 @@ export default async function Home() {
                 <span className="font-display font-bold text-6xl text-ink-3">{outlets[0]?.name.charAt(0) ?? "C"}</span>
               </div>
             )}
+            <div className="absolute -top-10 -right-6 w-44 h-44 pointer-events-none" aria-hidden>
+              <Hero3DLazy />
+            </div>
             <div className="absolute -bottom-4 -left-4 bg-ink text-white rounded-l px-4 py-3 shadow-far">
               <p className="text-xs opacity-70">Peak hunger hours</p>
               <p className="font-display font-bold">12:30 – 1:45 PM · Beat the queue</p>
@@ -122,7 +126,7 @@ export default async function Home() {
             <h2 className="font-display text-xl font-bold">Pay at counter or online</h2>
             <p className="text-white/70 text-sm">Razorpay + pay-at-counter. Verified server-side, always.</p>
           </div>
-          <Link href="/offers" className="ml-auto px-4 py-2.5 rounded-m bg-accent text-accent-ink font-bold min-h-11 inline-flex items-center">See offers</Link>
+          <Link href="/offers" className="ml-auto px-4 py-2.5 rounded-m bg-accent-deep text-white font-bold min-h-11 inline-flex items-center">See offers</Link>
         </section>
       </div>
     </ConsumerShell>

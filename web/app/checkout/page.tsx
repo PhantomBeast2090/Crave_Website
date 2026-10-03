@@ -92,6 +92,8 @@ export default function CheckoutPage() {
   async function submit() {
     if (!session || !outletId || !activeSlotId) return;
     setBusy(true); setErr(null);
+    const { trackEvent } = await import("@/lib/analytics/events");
+    trackEvent({ name: "checkout_started", metadata: { outletId, items: lines.length, total } });
     try {
       const sb = createClient();
       const cartId = await syncServerCart(sb, session.userId, outletId);
@@ -101,6 +103,7 @@ export default function CheckoutPage() {
       if (method === "ONLINE") {
         await payOnline(sb, orderId);
       }
+      trackEvent({ name: "order_completed", entityType: "order", entityId: orderId, metadata: { method, total } });
       clearCart();
       setPlaced(orderId);
     } catch (e) {
@@ -214,7 +217,7 @@ export default function CheckoutPage() {
         </section>
         {err && <div className="mt-3 border border-red-200 bg-red-50 rounded-l p-4" role="alert"><p className="font-bold">Something didn&apos;t go through.</p><p className="text-sm text-ink-2">{err}</p></div>}
         <button disabled={!outletId || !activeSlotId || busy || lines.length === 0} onClick={submit}
-          className="mt-4 w-full h-12 rounded-m bg-accent text-accent-ink font-bold hover:bg-accent-deep disabled:opacity-50 min-h-11">
+          className="mt-4 w-full h-12 rounded-m bg-accent-deep text-white font-bold hover:bg-ink disabled:opacity-50 min-h-11">
           {busy ? "Placing…" : `Place pickup order · ${inr(total)}`}
         </button>
       </div>

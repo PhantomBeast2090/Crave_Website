@@ -32,7 +32,7 @@ export function ConsumerShell({ children }: { children: React.ReactNode }) {
             <Link href="/search" className="md:hidden p-2 rounded-m hover:bg-surface-2" aria-label="Search"><Search size={20} /></Link>
             <Link href="/cart" className="relative p-2 rounded-m bg-ink text-white hover:bg-charcoal-2" aria-label={`Cart, ${cartCount} items`}>
               <ShoppingBag size={18} />
-              {cartCount > 0 && <span className="absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1 rounded-pill bg-accent text-accent-ink text-[11px] font-bold grid place-items-center tabular">{cartCount}</span>}
+              {cartCount > 0 && <span className="absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1 rounded-pill bg-accent-deep text-white text-[11px] font-bold grid place-items-center tabular">{cartCount}</span>}
             </Link>
           </div>
         </div>

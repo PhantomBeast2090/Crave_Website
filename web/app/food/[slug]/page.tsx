@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Clock } from "lucide-react";
 import { ConsumerShell } from "@/components/consumer-shell";
@@ -9,6 +10,17 @@ import { inr } from "@/lib/domain/types";
 import { slugify } from "@/lib/slug";
 
 export const revalidate = 60;
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const food = await getFood(slug).catch(() => null);
+  if (!food) return { title: "Dish not found · CRAVE" };
+  return {
+    title: `${food.name} · ${food.outletName} on CRAVE`,
+    description: `${food.name} at ${food.outletName} — ${inr(food.price)}. Reserve a pickup slot and skip the queue.`,
+    openGraph: { title: food.name, description: food.description || undefined, ...(food.imageUrl ? { images: [food.imageUrl] } : {}) },
+  };
+}
 
 export default async function FoodPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

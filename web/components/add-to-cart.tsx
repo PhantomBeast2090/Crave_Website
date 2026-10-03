@@ -18,7 +18,7 @@ export function AddToCart({ foodId, price, available }: { foodId: string; price:
           <button onClick={() => setQty((q) => q + 1)} className="p-3 min-w-11 min-h-11" aria-label="Increase quantity"><Plus size={16} /></button>
         </div>
         <button disabled={!available} onClick={() => { addToCart({ foodId, qty, options: [] }); setAdded(true); }}
-          className="flex-1 h-12 rounded-m bg-accent text-accent-ink font-bold hover:bg-accent-deep disabled:opacity-50 min-h-11">
+          className="flex-1 h-12 rounded-m bg-accent-deep text-white font-bold hover:bg-ink disabled:opacity-50 min-h-11">
           {available ? (added ? "Added ✓ — view cart" : `Add ${qty} · ${inr(price * qty)}`) : "Unavailable"}
         </button>
       </div>

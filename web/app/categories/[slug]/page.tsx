@@ -1,11 +1,23 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { ConsumerShell } from "@/components/consumer-shell";
 import { FoodCard } from "@/components/cards";
 import { foodsByCategory, listCategories } from "@/lib/data/live";
 import { isUuid, slugify } from "@/lib/slug";
 
 export const revalidate = 60;
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const categories = await listCategories().catch(() => []);
+  const cat = isUuid(slug) ? categories.find((c) => c.id === slug) : categories.find((c) => slugify(c.name) === slug);
+  if (!cat) return { title: "Category not found · CRAVE" };
+  return {
+    title: `${cat.name} on campus · CRAVE`,
+    description: `Find ${cat.name} across campus outlets. Reserve a pickup slot and skip the queue.`,
+  };
+}
 
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

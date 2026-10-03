@@ -48,7 +48,7 @@ export default function NotificationsPage() {
             <article key={n.id} className={`bg-surface border rounded-l p-4 ${n.is_read ? "border-line" : "border-ink"}`}>
               <div className="flex items-center gap-2">
                 <h2 className="font-bold">{n.title}</h2>
-                {!n.is_read && <span className="text-[11px] font-bold px-2 py-0.5 rounded-pill bg-accent text-accent-ink">New</span>}
+                {!n.is_read && <span className="text-[11px] font-bold px-2 py-0.5 rounded-pill bg-accent-deep text-white">New</span>}
                 <span className="ml-auto text-xs text-ink-2">{new Date(n.created_at).toLocaleString("en-IN")}</span>
               </div>
               <p className="text-sm text-ink-2">{n.body}</p>

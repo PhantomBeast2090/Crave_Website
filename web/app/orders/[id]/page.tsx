@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { QrCode } from "lucide-react";
+import QRCode from "react-qr-code";
 import { ConsumerShell } from "@/components/consumer-shell";
 import { ORDER_COPY, ORDER_FLOW, type OrderStatus } from "@/lib/domain/types";
 import { inr } from "@/lib/domain/types";
@@ -83,11 +83,17 @@ export default function OrderDetailPage() {
             </div>
             {o.status === "READY" && (
               <div className="mt-3 bg-ink text-white rounded-l p-5 flex gap-4 items-center">
-                <span className="w-20 h-20 rounded-m bg-white grid place-items-center text-ink shrink-0" aria-hidden><QrCode size={44} /></span>
+                {qr ? (
+                  <span className="rounded-m bg-white p-2 shrink-0" role="img" aria-label={`Pickup QR for order ${o.order_number}`}>
+                    <QRCode value={qr.token} size={88} aria-hidden />
+                  </span>
+                ) : (
+                  <span className="w-20 h-20 rounded-m bg-white/10 grid place-items-center text-xs text-center px-2 shrink-0" aria-hidden>QR…</span>
+                )}
                 <div className="min-w-0">
                   <p className="font-display font-bold text-lg">Ready to grab</p>
                   {qr ? (
-                    <p className="text-sm text-white/70 tabular break-all">Token {qr.token.slice(0, 12)}…{qr.token.slice(-6)} · show this screen at the counter</p>
+                    <p className="text-sm text-white/70">Show this code at {o.outlets?.name ?? "the counter"} — it scans your pickup token.</p>
                   ) : (
                     <p className="text-sm text-white/70">{qrErr ?? "Fetching your pickup token…"}</p>
                   )}

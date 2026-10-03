@@ -93,7 +93,7 @@ export default function CartPage() {
               {conflict ? (
                 <span className="flex-1 text-center px-4 py-3 rounded-m bg-surface-2 text-ink-2 font-bold min-h-11">Resolve the outlet conflict to continue</span>
               ) : (
-                <Link href="/checkout" className="flex-1 text-center px-4 py-3 rounded-m bg-accent text-accent-ink font-bold hover:bg-accent-deep min-h-11">Review order →</Link>
+                <Link href="/checkout" className="flex-1 text-center px-4 py-3 rounded-m bg-accent-deep text-white font-bold hover:bg-ink min-h-11">Review order →</Link>
               )}
             </div>
           </>

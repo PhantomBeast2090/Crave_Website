@@ -46,7 +46,7 @@ export default function LoginPage() {
             {errors.password && <p id="pw-err" className="text-sm text-error mt-1">{errors.password.message}</p>}
           </div>
           {err && <p role="alert" className="text-sm text-error bg-red-50 border border-red-200 rounded-m p-3">{err}</p>}
-          <button disabled={isSubmitting} className="w-full h-12 rounded-m bg-accent text-accent-ink font-bold hover:bg-accent-deep disabled:opacity-60 min-h-11">
+          <button disabled={isSubmitting} className="w-full h-12 rounded-m bg-accent-deep text-white font-bold hover:bg-ink disabled:opacity-60 min-h-11">
             {isSubmitting ? "Signing in…" : "Sign in"}
           </button>
           <p className="text-sm text-ink-2">New here? <a href="/auth/register" className="underline font-bold text-ink">Create an account</a></p>

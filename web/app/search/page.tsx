@@ -117,7 +117,7 @@ function SearchBody() {
             className="w-20 h-11 px-3 rounded-m border border-line bg-surface" aria-label="Maximum price" />
         </label>
         <label className="ml-auto text-sm font-bold">Sort
-          <select value={sort} onChange={(e) => setSort(e.target.value as Sort)} className="ml-2 h-11 px-3 rounded-m border border-line bg-surface" aria-label="Sort results">
+          <select value={sort} onChange={(e) => { setSort(e.target.value as Sort); import("@/lib/analytics/events").then((m) => m.trackEvent({ name: "sort_applied", metadata: { sort: e.target.value } })); }} className="ml-2 h-11 px-3 rounded-m border border-line bg-surface" aria-label="Sort results">
             <option value="relevance">Relevance</option>
             <option value="price-asc">Price: low</option>
             <option value="price-desc">Price: high</option>

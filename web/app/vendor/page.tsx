@@ -55,7 +55,7 @@ export default function VendorHome() {
                     <span className="ml-auto flex gap-1">
                       {o.status === "PLACED" && <><button disabled={!!acting} onClick={() => act("vendor_accept_order", o.id)} className="px-2.5 py-2 rounded-m bg-ink text-white text-xs font-bold min-h-11">Accept</button><button disabled={!!acting} onClick={() => act("vendor_reject_order", o.id, { p_reason: "Rejected by vendor" })} className="px-2.5 py-2 rounded-m border border-line text-xs font-bold min-h-11">Reject</button></>}
                       {o.status === "ACCEPTED" && <button disabled={!!acting} onClick={() => act("vendor_start_preparing", o.id)} className="px-2.5 py-2 rounded-m bg-ink text-white text-xs font-bold min-h-11">Start preparing</button>}
-                      {o.status === "PREPARING" && <button disabled={!!acting} onClick={() => act("vendor_mark_ready", o.id)} className="px-2.5 py-2 rounded-m bg-accent text-accent-ink text-xs font-bold min-h-11">Mark ready</button>}
+                      {o.status === "PREPARING" && <button disabled={!!acting} onClick={() => act("vendor_mark_ready", o.id)} className="px-2.5 py-2 rounded-m bg-accent-deep text-white text-xs font-bold min-h-11">Mark ready</button>}
                     </span>
                   </div>
                 ))}

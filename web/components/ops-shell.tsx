@@ -3,7 +3,7 @@ import Link from "next/link";
 function OpsShell({ title, sub, children }: { title: string; sub: string; children: React.ReactNode }) {
   const base = title.startsWith("Vendor") ? "/vendor" : "/management";
   const links = title.startsWith("Vendor")
-    ? [["Command", "/vendor"], ["Orders", "/vendor/orders"], ["Menu", "/vendor/menu"], ["Inventory", "/vendor/inventory"], ["Analytics", "/vendor/analytics"], ["Reviews", "/vendor/reviews"], ["Promotions", "/vendor/promotions"], ["Settings", "/vendor/settings"]]
+    ? [["Command", "/vendor"], ["Orders", "/vendor/orders"], ["QR scan", "/vendor/qr-scanner"], ["Menu", "/vendor/menu"], ["Inventory", "/vendor/inventory"], ["Analytics", "/vendor/analytics"], ["Reviews", "/vendor/reviews"], ["Promotions", "/vendor/promotions"], ["Settings", "/vendor/settings"]]
     : [["Overview", "/management"], ["Analytics", "/management/analytics"], ["Orders", "/management/orders"], ["Outlets", "/management/outlets"], ["Vendors", "/management/vendors"], ["Users", "/management/users"], ["Payments", "/management/payments"], ["Inventory", "/management/inventory"], ["Reviews", "/management/reviews"], ["Promotions", "/management/promotions"], ["Slots", "/management/pickup-slots"], ["Audit", "/management/audit"]];
   return (
     <div className="min-h-dvh bg-surface-2">

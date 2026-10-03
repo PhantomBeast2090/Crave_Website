@@ -27,7 +27,7 @@ export default function P() {
             <p className="font-bold tabular">{last.order_number}</p>
             {last.order_items.map((it, i) => <p key={i} className="text-sm text-ink-2">{it.quantity}× {it.food_name}</p>)}
             <button disabled={done} onClick={() => { last.order_items.forEach((it) => { if (it.food_item_id) addToCart({ foodId: it.food_item_id, qty: it.quantity, options: [] }); }); setDone(true); }}
-              className="mt-3 px-4 py-3 rounded-m bg-accent text-accent-ink font-bold disabled:opacity-60 min-h-11">
+              className="mt-3 px-4 py-3 rounded-m bg-accent-deep text-white font-bold disabled:opacity-60 min-h-11">
               {done ? "Added — review in cart" : "Reorder these items"}
             </button>
             {done && <Link href="/cart" className="ml-3 underline font-bold text-sm">Go to cart →</Link>}
