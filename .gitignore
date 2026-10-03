@@ -1,0 +1,19 @@
+# deps
+node_modules/
+.opencode/node_modules/
+web/node_modules/
+
+# next
+web/.next/
+web/out/
+web/dist/
+*.tsbuildinfo
+
+# env
+.env
+.env*.local
+web/.env*.local
+
+# misc
+.DS_Store
+*.log
