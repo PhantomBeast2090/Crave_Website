@@ -8,6 +8,7 @@ interface AppState {
   role: "STUDENT" | "VENDOR" | "ADMIN";
   addToCart: (l: CartLine) => void;
   setQty: (foodId: string, qty: number) => void;
+  removeMany: (foodIds: string[]) => void;
   clearCart: () => void;
   toggleFav: (id: string) => void;
   setRole: (r: AppState["role"]) => void;
@@ -32,12 +33,13 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
     setCart((c) => qty <= 0 ? c.filter((x) => x.foodId !== foodId) : c.map((x) => x.foodId === foodId ? { ...x, qty } : x));
   }, []);
   const clearCart = useCallback(() => setCart([]), []);
+  const removeMany = useCallback((ids: string[]) => setCart((c) => c.filter((x) => !ids.includes(x.foodId))), []);
   const toggleFav = useCallback((id: string) => setFavs((f) => f.includes(id) ? f.filter((x) => x !== id) : [...f, id]), []);
 
   const v = useMemo(() => ({
-    cart, favs, role, addToCart, setQty, clearCart, toggleFav, setRole,
+    cart, favs, role, addToCart, setQty, removeMany, clearCart, toggleFav, setRole,
     cartCount: cart.reduce((a, b) => a + b.qty, 0),
-  }), [cart, favs, role, addToCart, setQty, clearCart, toggleFav]);
+  }), [cart, favs, role, addToCart, setQty, removeMany, clearCart, toggleFav]);
   return <Ctx.Provider value={v}>{children}</Ctx.Provider>;
 }
 

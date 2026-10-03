@@ -2,26 +2,37 @@
 
 > Updated as phases land. Legend: COMPLETED · PARTIALLY COMPLETED · BACKEND REQUIRED · DEFERRED · KNOWN LIMITATION.
 
+## Backend connection: LIVE
+- Project `btdmhveaqssuuhyoyanz` (`https://btdmhveaqssuuhyoyanz.supabase.co`), publishable key in `web/.env.local` (gitignored, never committed). No service_role in the repo. AnonReads + GoTrue + RPCs + Edge verified from the browser path.
+- Live data observed: **9 outlets, 1397 food items, 61 categories, 504 future pickup slots**. `search_food`, `get_catalogue_for_outlet` verified working. `reviews` empty, `coupons` empty, `food_variants` empty.
+- **Zero demo/fake data in the app.** `lib/domain/demo.ts` deleted. Every page reads Supabase or renders an honest loading/empty/error/permission state.
+
 ## PHASE 0 — Audit: COMPLETED
-Android `com.srmfood.gag` mapped (22 student + 13 vendor + management suite), migrations 001–017 mapped, RPC/Edge/RLS contracts mapped, iOS parity docs ingested. `supabase_schema.json` ignored (invalid-key placeholder).
+Android `com.srmfood.gag` mapped, migrations 001–017 mapped, RPC/Edge/RLS contracts mapped, iOS parity docs ingested.
 
 ## PHASE 1 — Design contracts: COMPLETED
 `CRAVE_WEB_DESIGN_BRIEF.md`, `CRAVE_DESIGN_TOKENS.md`, `CRAVE_WEB_ARCHITECTURE.md`, `CRAVE_SEARCH_SPEC.md`, `CRAVE_REVIEW_SYSTEM.md`, `CRAVE_ANALYTICS_SPEC.md` present.
 
-## PHASE 2 — Foundation: IN PROGRESS
-Next.js 16 + React 19 + Tailwind v4 + shadcn scaffold in `/web`, token CSS, shells, providers. Pending verification (`npm run build`, Playwright screenshots 1440+390).
+## PHASE 2 — Foundation: COMPLETED
+Next.js 16 + React 19 + Tailwind v4 scaffold, token CSS, consumer/vendor/management shells. `next build` clean, `eslint` clean, Playwright 6/6 live-backend suites green, screenshots reviewed at 1440 + 390.
 
-## PHASE 3+ — PARTIALLY COMPLETED (demo-backed)
-Consumer/vendor/management routes render with demo data + Supabase-live upgrade path (`NEXT_PUBLIC_SUPABASE_*` set → real data). No fake buttons: actions without backend show honest "demo / backend required" notice.
+## PHASE 3+ — Consumer/vendor/management on live data: COMPLETED (honest states where backend lacks data)
+- Home/search/outlet/food/category/collections/campus: live catalogue, real counts, honest rails (Under ₹100, categories, outlets). No trending/rating claims — backend has no order/rating aggregates publicly.
+- Cart: live price refresh, single-outlet conflict resolution. Checkout: live slots, server-cart sync, `place_order` RPC, pay-at-counter + Razorpay Checkout.js with honest fallback when unconfigured.
+- Orders/tracking: live rows + realtime status + QR token (needs 018 owner policy; honest fallback until applied).
+- Favourites: device saves merged with `favorites` table when signed in. Reviews: live read + verified-order-gated write. Offers: live `coupons` (currently empty → honest empty). Profile/auth: GoTrue + `profiles` row.
+- Vendor: outlet-scoped orders + 1-tap RPC transitions + realtime, menu availability/price, inventory, computed analytics, reviews, promotions, open/close.
+- Management: `get_management_analytics` RPC, orders/outlets/vendors/users/payments/inventory/slots/reviews/promotions/audit — all RLS-honest.
 
-## BACKEND REQUIRED
-- `018_web_parity_guards`: `get_admin_stats users→profiles`, `pickup_tokens` owner SELECT, `mark_payment_verified` hardening + service_role lockdown (expand→migrate→contract).
-- `019_reviews`: images/votes/reports/replies + aggregates.
-- `020_growth`: outlet favourites, collections, `analytics_events`/`search_events`, group-order tables, promo usage.
-- Razorpay live keys + webhook secret in Edge env.
+## BACKEND REQUIRED (additive migrations, Android untouched)
+- `018_web_parity_guards` (in `web/supabase/migrations/`): `get_admin_stats users→profiles` fix, `pickup_tokens` owner SELECT, `mark_payment_verified` hardening + service_role lockdown (expand→migrate→contract). **Needs DBA apply + soak.**
+- `019_reviews`: images/votes/reports/replies + server aggregates + moderation states.
+- `020_growth`: outlet favourites, collections, `analytics_events`/`search_events`, group-order tables, promotion creation, inventory adjustments, `slug` columns for outlets/categories/foods.
+- Razorpay live Key ID + Edge secrets for online payments.
 
-## KNOWN LIMITATIONS
-- Single-outlet cart (multi-outlet iOS-016 proposal unapplied — stays single-outlet).
-- Realtime-only notifications (FCM dormant, push deferred).
-- Vendor QR scanner manual-token fallback until camera path verified.
-- 3D/Spline lazy garnish only; static fallback when WebGL/reduced-motion.
+## KNOWN DATA-LIMITATIONS (live backend, surfaced honestly — never papered over)
+- `is_veg` is `true` on all 1397 rows (015 heuristic backfill) — dietary filter stays OFF until re-classified; serving wrong veg info would be harmful.
+- `rating`/`total_reviews` are 0 everywhere — UI shows "Not rated yet", rating sort removed until aggregates exist.
+- `prep_time_minutes` defaults (≤10 everywhere) — "fastest pickup" rail removed; per-item prep shown as stored.
+- `food_variants` empty — customisations UI deferred; checkout notes it.
+- `pickup_slots` future rows exist (504) but are outlet-sparse — empty days say so plainly.

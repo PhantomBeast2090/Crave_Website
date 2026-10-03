@@ -1,32 +1,41 @@
 import Link from "next/link";
 import { ConsumerShell } from "@/components/consumer-shell";
+import { supabaseAnonKey, supabaseUrl } from "@/lib/supabase/env";
 
-const OFFERS = [
-  { code: "CAMPUS20", title: "20% off your between-class lunch", desc: "Min ₹149 · max ₹60 · 12–3 PM", color: "#FF4D2E" },
-  { code: "UNDER100", title: "Under ₹100 rescue menu", desc: "Dosa, chai, maggi lab picks", color: "#A8E10C" },
-  { code: "NIGHTOWL", title: "Late-night momo run", desc: "Free dip after 10 PM at Night Canteen", color: "#7C5CFF" },
-];
+export const revalidate = 60;
 
-export default function OffersPage() {
+export default async function OffersPage() {
+  let coupons: { code: string; description: string | null }[] = [];
+  try {
+    const r = await fetch(`${supabaseUrl}/rest/v1/coupons?select=code,description&is_active=eq.true&limit=20`,
+      { headers: { apikey: supabaseAnonKey, Authorization: `Bearer ${supabaseAnonKey}` }, next: { revalidate: 60 } });
+    if (r.ok) coupons = await r.json();
+  } catch { /* honest empty below */ }
   return (
     <ConsumerShell>
       <div className="mx-auto max-w-6xl px-4 py-8">
         <h1 className="font-display text-3xl font-bold">Offers</h1>
-        <p className="text-sm text-ink-2">Striking, not spammy. Coupons validate server-side.</p>
-        <div className="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {OFFERS.map((o) => (
-            <article key={o.code} className="rounded-l overflow-hidden border border-line bg-surface">
-              <div className="p-5 text-white" style={{ background: o.color }}>
-                <p className="font-display font-bold text-xl">{o.title}</p>
-                <p className="text-sm opacity-90">{o.desc}</p>
-              </div>
-              <div className="p-4 flex items-center gap-2">
-                <code className="px-2.5 py-1.5 rounded-m bg-surface-2 border border-dashed border-ink-3 font-bold tabular">{o.code}</code>
-                <Link href="/cart" className="ml-auto px-3 py-2 rounded-m bg-ink text-white text-sm font-bold min-h-11 inline-flex items-center">Apply in cart</Link>
-              </div>
-            </article>
-          ))}
-        </div>
+        <p className="text-sm text-ink-2">Live from the coupons table — validated server-side at checkout.</p>
+        {coupons.length === 0 ? (
+          <div className="mt-6 bg-surface border border-line rounded-l p-8 text-center max-w-md mx-auto">
+            <h2 className="font-display text-xl font-bold">No active offers right now.</h2>
+            <p className="text-sm text-ink-2">The Under ₹100 shelf is always in budget. <Link href="/" className="underline font-bold text-ink">Browse food →</Link></p>
+          </div>
+        ) : (
+          <div className="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {coupons.map((o) => (
+              <article key={o.code} className="rounded-l overflow-hidden border border-line bg-surface">
+                <div className="p-5 bg-ink text-white">
+                  <p className="font-mono font-bold text-xl tabular">{o.code}</p>
+                  <p className="text-sm opacity-80">{o.description}</p>
+                </div>
+                <div className="p-4">
+                  <Link href="/cart" className="px-3 py-2 rounded-m bg-ink text-white text-sm font-bold min-h-11 inline-flex items-center">Apply in cart</Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
       </div>
     </ConsumerShell>
   );

@@ -1,14 +1,12 @@
-import { OpsShell, Kpi, ChartCard } from "@/components/ops-shell";
+"use client";
+import { OpsShell, ChartCard } from "@/components/ops-shell";
+import { useSession, RequireSignIn } from "@/lib/data/authed";
 export default function P() {
+  const { session, loading } = useSession();
+  if (!loading && !session) return <OpsShell title="notifications" sub="Sign in."><RequireSignIn action="open notifications" /></OpsShell>;
   return (
-    <OpsShell title="Management · notifications" sub="Campus command centre — server-aggregated, role-guarded.">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <Kpi label="Orders" value="1,284" delta="+6%" />
-        <Kpi label="Revenue" value="₹1.9L" delta="+4%" />
-        <Kpi label="Active outlets" value="5/6" />
-        <Kpi label="Repeat rate" value="38%" />
-      </div>
-      <div className="mt-3"><ChartCard title="notifications overview" empty="Rankings, trends and drill-downs query get_management_analytics + daily/hourly views when Supabase is live." /></div>
+    <OpsShell title="notifications" sub="Management section.">
+      <ChartCard title="notifications" empty="No dedicated backend table backs this section yet — broadcast center, helpdesk and audit log land with the operations migration. Nothing here is fabricated." />
     </OpsShell>
   );
 }

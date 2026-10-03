@@ -55,7 +55,7 @@ export function ConsumerShell({ children }: { children: React.ReactNode }) {
       <footer className="hidden md:block border-t border-line mt-16">
         <div className="mx-auto max-w-6xl px-4 py-10 text-sm text-ink-2 flex flex-wrap gap-x-8 gap-y-2">
           <span className="font-display font-bold text-ink">CRAVE.</span>
-          <span>SRM campus food OS · demo build</span>
+          <span>SRM campus food OS · live catalogue</span>
           <Link href="/help" className="underline">Help</Link>
           <Link href="/campus" className="underline">Campus</Link>
           <span className="ml-auto flex items-center gap-1"><UtensilsCrossed size={14} /> Find it. Grab it. Get back to life.</span>

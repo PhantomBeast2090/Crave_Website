@@ -1,17 +1,34 @@
 "use client";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { Heart, Plus, Star, Clock } from "lucide-react";
-import type { FoodItem } from "@/lib/domain/types";
+import { Heart, Plus } from "lucide-react";
+import { useState } from "react";
+import type { LiveFood } from "@/lib/data/live";
 import { inr } from "@/lib/domain/types";
+import { hasRating } from "@/lib/slug";
 import { useApp } from "./providers";
 import { cn } from "@/lib/utils";
 
-export function VegMark({ veg }: { veg: boolean }) {
+export function FoodImage({ food, className }: { food: Pick<LiveFood, "name" | "imageUrl" | "categoryName">; className?: string }) {
+  const [err, setErr] = useState(false);
+  if (!food.imageUrl || err) {
+    return (
+      <div className={cn("grid place-items-center bg-surface-2", className)} role="img" aria-label={`${food.name} (photo coming soon)`}>
+        <span className="font-display font-bold text-4xl text-ink-3" aria-hidden>{food.name.charAt(0)}</span>
+      </div>
+    );
+  }
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src={food.imageUrl} alt={food.name} loading="lazy" onError={() => setErr(true)} className={cn("object-cover", className)} />;
+}
+
+export function RatingLine({ rating, total }: { rating: number; total: number }) {
+  if (!hasRating(rating, total)) {
+    return <span className="text-xs text-ink-3 font-semibold">Not rated yet</span>;
+  }
   return (
-    <span role="img" aria-label={veg ? "Veg" : "Non-veg"}
-      className={cn("inline-grid place-items-center w-4 h-4 rounded-[4px] border-2", veg ? "border-green-700" : "border-red-700")}>
-      <span className={cn("w-1.5 h-1.5 rounded-full", veg ? "bg-green-700" : "bg-red-700")} />
+    <span className="inline-flex items-center gap-1 text-xs font-bold text-ink">
+      ★ {rating.toFixed(1)} <span className="font-normal text-ink-2">({total})</span>
     </span>
   );
 }
@@ -24,9 +41,10 @@ export function FavouriteButton({ id }: { id: string }) {
       whileTap={{ scale: 0.75 }}
       onClick={() => toggleFav(id)}
       aria-pressed={on}
-      aria-label={on ? "Remove from favourites" : "Add to favourites"}
-      className={cn("p-2 rounded-pill min-w-11 min-h-11 grid place-items-center border", on ? "bg-pink text-white border-pink" : "bg-surface border-line")}
-      style={on ? { background: "#FF4D8D", borderColor: "#FF4D8D" } : undefined}
+      aria-label={on ? "Remove from saved" : "Save on this device"}
+      title="Saved on this device — sign in to sync across devices"
+      className={cn("p-2 rounded-pill min-w-11 min-h-11 grid place-items-center border bg-surface border-line")}
+      style={on ? { background: "#FF4D8D", borderColor: "#FF4D8D", color: "#fff" } : undefined}
     >
       <motion.span key={String(on)} initial={{ scale: on ? 0.4 : 1 }} animate={{ scale: 1 }} transition={{ type: "spring", bounce: 0.5, duration: 0.35 }}>
         <Heart size={16} fill={on ? "currentColor" : "none"} />
@@ -35,32 +53,26 @@ export function FavouriteButton({ id }: { id: string }) {
   );
 }
 
-export function FoodCard({ food }: { food: FoodItem }) {
+export function FoodCard({ food }: { food: LiveFood }) {
   const { addToCart } = useApp();
   return (
     <motion.article layout initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-40px" }}
       className="bg-surface border border-line rounded-l overflow-hidden shadow-near flex flex-col">
       <div className="relative">
-        <Link href={`/food/${food.slug}`} aria-label={food.name}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={food.image} alt={food.name} loading="lazy" className="w-full aspect-[4/3] object-cover" />
+        <Link href={`/food/${food.id}`} aria-label={food.name}>
+          <FoodImage food={food} className="w-full aspect-[4/3]" />
         </Link>
-        <div className="absolute top-2 left-2 flex gap-1.5">
-          {food.isPopular && <span className="px-2 py-1 rounded-pill bg-ink text-white text-[11px] font-bold">Popular on campus</span>}
-          {!food.isAvailable && <span className="px-2 py-1 rounded-pill bg-error text-white text-[11px] font-bold">Unavailable</span>}
-        </div>
+        {!food.isAvailable && (
+          <span className="absolute top-2 left-2 px-2 py-1 rounded-pill bg-error text-white text-[11px] font-bold">Unavailable</span>
+        )}
         <div className="absolute top-2 right-2"><FavouriteButton id={food.id} /></div>
       </div>
       <div className="p-3 flex flex-col gap-1.5 flex-1">
-        <div className="flex items-center gap-1.5">
-          <VegMark veg={food.isVeg} />
-          <Link href={`/food/${food.slug}`} className="font-display font-bold leading-tight hover:underline">{food.name}</Link>
-        </div>
-        <p className="text-xs text-ink-2">{food.outletName}</p>
-        <div className="flex items-center gap-2 text-xs text-ink-2">
-          <span className="inline-flex items-center gap-1 font-bold text-ink"><Star size={12} fill="#FF9E0B" strokeWidth={0} />{food.rating}</span>
-          <span>({food.totalReviews})</span>
-          <span className="inline-flex items-center gap-1"><Clock size={12} />{food.prepMin} min</span>
+        <Link href={`/food/${food.id}`} className="font-display font-bold leading-tight hover:underline">{food.name}</Link>
+        <p className="text-xs text-ink-2">{food.outletName}{food.categoryName ? ` · ${food.categoryName}` : ""}</p>
+        <div className="flex items-center gap-2">
+          <RatingLine rating={food.rating} total={food.totalReviews} />
+          <span className="text-xs text-ink-2">· {food.prepMin} min</span>
         </div>
         <div className="mt-auto flex items-center justify-between pt-1">
           <span className="font-bold tabular">{inr(food.price)}</span>
@@ -81,6 +93,16 @@ export function EmptyState({ title, body, action }: { title: string; body: strin
       <h2 className="font-display text-2xl font-bold mt-4">{title}</h2>
       <p className="text-ink-2 mt-1">{body}</p>
       {action && <div className="mt-4">{action}</div>}
+    </div>
+  );
+}
+
+export function ErrorState({ title, body, onRetry }: { title: string; body: string; onRetry?: () => void }) {
+  return (
+    <div className="text-center py-16 px-6 max-w-md mx-auto" role="alert">
+      <h2 className="font-display text-2xl font-bold mt-4">{title}</h2>
+      <p className="text-ink-2 mt-1">{body}</p>
+      {onRetry && <button onClick={onRetry} className="mt-4 px-4 py-2.5 rounded-m bg-ink text-white font-bold min-h-11">Retry</button>}
     </div>
   );
 }
