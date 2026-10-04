@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Heart, Home, Receipt, Search, User, ShoppingBag, UtensilsCrossed } from "lucide-react";
+import { Heart, Home, Receipt, Search, User, ShoppingBag, UtensilsCrossed, Settings } from "lucide-react";
 import { useApp } from "./providers";
 import { cn } from "@/lib/utils";
 
@@ -30,6 +30,7 @@ export function ConsumerShell({ children }: { children: React.ReactNode }) {
           </nav>
           <div className="ml-auto flex items-center gap-2">
             <Link href="/search" className="md:hidden p-2 rounded-m hover:bg-surface-2" aria-label="Search"><Search size={20} /></Link>
+            <Link href="/settings" className="p-2 rounded-m hover:bg-surface-2 min-w-11 min-h-11 grid place-items-center" aria-label="Settings and account"><Settings size={20} /></Link>
             <Link href="/cart" className="relative p-2 rounded-m bg-ink text-white hover:bg-charcoal-2" aria-label={`Cart, ${cartCount} items`}>
               <ShoppingBag size={18} />
               {cartCount > 0 && <span className="absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1 rounded-pill bg-accent-deep text-white text-[11px] font-bold grid place-items-center tabular">{cartCount}</span>}
